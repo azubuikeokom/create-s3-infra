@@ -7,10 +7,7 @@ jobs:
     - checkout
     - run:
         name: Execute bucket.yml - Create Cloudformation Stack
-        command: |
-       aws cloudformation deploy \
-       --template-file s3-bucket.yml \
-       --stack-name green-production
+        command: aws cloudformation deploy --template-file s3-bucket.yml --stack-name green-production
     - run: aws s3 cp index.html s3://my-10295230219-bucket-2
  
  smoke_test:
