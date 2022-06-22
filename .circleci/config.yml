@@ -1,0 +1,37 @@
+version: 2.1
+jobs:
+ create_and_deploy_front_end: 
+  docker:
+    - image: amazon/aws-cli
+  steps:
+    - checkout
+    - run:
+        name: Execute bucket.yml - Create Cloudformation Stack
+        command: |
+       aws cloudformation deploy \
+       --template-file bucket.yml \
+       --stack-name green-production
+    - run: aws s3 cp index.html s3://my-10295230219-bucket-2
+ 
+ smoke_test:
+  docker:
+    - image: alpine
+  steps:
+    - run: apk add --update curl
+    - run:
+        name: perform a smoke test
+        command: |
+          URL="https://blog.udacity.com"
+          if curl -s --head ${URL}
+          then
+            return 0
+          else
+            return 1
+          fi
+  
+# Sequential workflow
+workflows:
+  # Name the workflow
+  myWorkflow:
+    jobs:
+      - create_and_deploy_front_end           
